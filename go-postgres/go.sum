@@ -1,0 +1,9 @@
+github.com/Valgard/go-pcre v0.0.0-20200510215507-235e400e25e9 h1:0lG/MypDQyrv+g3GoApJwgAX8W7eUskpZaDcobxoHA4=
+github.com/Valgard/go-pcre v0.0.0-20200510215507-235e400e25e9/go.mod h1:dPmwfLc83w8+8tnYkKrPzon1X6EDhKQzcgeJw9cBm9g=
+github.com/Valgard/godotenv v0.0.0-20200511222744-8873b92a09c5 h1:wOsS79keYJAZ/JFhbeAukKOskg0YLy/K3T+d52ybI+M=
+github.com/Valgard/godotenv v0.0.0-20200511222744-8873b92a09c5/go.mod h1:8CKlwPUYW/JXcoFHqWYb44VlOjnrbdbUie/SOlwGaZE=
+github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
+github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
+github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
+github.com/lib/pq v1.10.9 h1:YXG7RB+JIjhP29X+OtkiDnYaXQwpS4JEWq7dtCCRUEw=
+github.com/lib/pq v1.10.9/go.mod h1:AlVN5x4E4T544tWzH6hKfbfQvm3HdbOxrmggDNAPY9o=
