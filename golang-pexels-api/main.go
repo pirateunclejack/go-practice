@@ -264,7 +264,7 @@ func (c *Client) GetRemainingRequestsInThisMonth() int32 {
 }
 
 func main() {
-	os.Setenv("PexelsToken", "***REMOVED***")
+	os.Setenv("PexelsToken", "****************************************************************")
 	var TOKEN = os.Getenv("PexelsToken")
 
 	var c, err = NewClient(TOKEN)
