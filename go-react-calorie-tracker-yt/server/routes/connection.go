@@ -11,7 +11,7 @@ import (
 )
 
 func DBinstance() *mongo.Client{
-	MongoDb := "mongodb://localhost:27017/caloriesdb"
+	MongoDb := "mongodb://root:example@localhost:27017/caloriesdb?authSource=admin"
 
 	var ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
