@@ -1,0 +1,15 @@
+.Message {
+  display: block;
+  background-color: #b2b1b9;
+  margin: 10px auto;
+  box-shadow: 0 5px 15px -5px rgba(0, 0, 0, 0.2);
+  padding: 10px 20px;
+  border-radius: 5px;
+  clear: both;
+}
+
+.Message.me {
+  color: rgba(70, 28, 28, 0.5);
+  float: right;
+  background-color: #ffeda3;
+}
