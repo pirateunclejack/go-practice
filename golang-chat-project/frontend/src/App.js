@@ -9,7 +9,7 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      ChatHistory: []
+      chatHistory: []
     }
   }
 
@@ -17,7 +17,7 @@ class App extends Component {
     connect((msg) => {
       console.log("New Message")
       this.setState(prevState => ({
-        ChatHistory: [...prevState.ChatHistory, msg]
+        chatHistory: [...prevState.chatHistory, msg]
       }))
       console.log(this.state)
     })
@@ -34,7 +34,7 @@ class App extends Component {
     return(
       <div className='App'>
         <Header/>
-        <ChatHistory chatHistory={this.state.ChatHistory}/>
+        <ChatHistory chatHistory={this.state.chatHistory}/>
         <ChatInput send={this.send}/>
       </div>
     )
