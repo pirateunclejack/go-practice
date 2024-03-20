@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -11,6 +10,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/pirateunclejack/go-practice/ecommerce-yt/database"
 	"github.com/pirateunclejack/go-practice/ecommerce-yt/models"
+	generate "github.com/pirateunclejack/go-practice/ecommerce-yt/tokens"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
@@ -18,7 +18,6 @@ import (
 
 var UserCollection = database.UserData(database.Client, "User")
 var ProductCollection = database.ProductData(database.Client, "Product")
-var validate = validator.New()
 
 func HashPassword(password string) string  {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
@@ -29,11 +28,12 @@ func HashPassword(password string) string  {
 }
 
 func VerifyPassword(userPassword string, givenPassword string) (bool, string) {
-	err := bcrypt.CompareHashAndPassword([]byte(userPassword), []byte(givenPassword))
+	err := bcrypt.CompareHashAndPassword([]byte(givenPassword), []byte(userPassword))
 	valid := true
 	msg := ""
 	if err != nil {
 		msg = "login or password is incorrect"
+		log.Fatalf("login or password is incorrect: %v", err)
 		valid = false
 	}
 	return valid, msg
@@ -55,8 +55,9 @@ func Signup() gin.HandlerFunc {
 		validationErr := validator.New().Struct(user)
 		if validationErr != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": validationErr,
+				"error": validationErr.Error(),
 			})
+			return
 		}
 
 
@@ -143,6 +144,7 @@ func Login() gin.HandlerFunc {
 		err := UserCollection.FindOne(ctx, bson.M{
 			"email": user.Email,
 		}).Decode(&founduser)
+		// log.Printf("found user before update all tokens: %v", founduser)
 		defer cancel()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
@@ -157,22 +159,58 @@ func Login() gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"error": msg,
 			})
-			fmt.Println(msg)
+			log.Printf("password verification failed: %v", msg)
 			return
 		}
 
 		token, refreshToken, _ := generate.TokenGenerator(
-			*founduser.Email, *founduser.First_Name, *founduser.Last_Name, founduser.User_ID)
+			*founduser.Email,
+			*founduser.First_Name,
+			*founduser.Last_Name,
+			founduser.User_ID)
 		defer cancel()
 
 		generate.UpdateAllTokens(token, refreshToken, founduser.User_ID)
 
+		// time.Sleep(500 * time.Millisecond)
+
+		err = UserCollection.FindOne(ctx, bson.M{
+			"email": user.Email,
+		}).Decode(&founduser)
+		// log.Printf("found user after update all tokens: %v", founduser)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "failed to get updated user after tokens refreshed",
+				"err": err.Error(),
+			})
+			return
+		}
+
 		c.JSON(http.StatusFound, founduser)
+
 	}
 }
 
 func ProductViewerAdmin() gin.HandlerFunc {
-
+	return func(c *gin.Context) {
+		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+		var products models.Product
+		defer cancel()
+		if err := c.BindJSON(&products); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		products.Product_ID = primitive.NewObjectID()
+		_, anyerr := ProductCollection.InsertOne(ctx, products)
+		if anyerr != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Not Created"})
+			return
+		}
+		defer cancel()
+		c.JSON(http.StatusOK, "successfully added our product admin!")
+	}
 }
 
 func SearchProduct() gin.HandlerFunc {
@@ -183,7 +221,9 @@ func SearchProduct() gin.HandlerFunc {
 
 		cursor, err := ProductCollection.Find(ctx, bson.D{{}})
 		if err != nil {
-			c.IndentedJSON(http.StatusInternalServerError, "something went wrong, please try after some time")
+			c.IndentedJSON(
+				http.StatusInternalServerError,
+				"something went wrong, please try after some time")
 			return
 		}
 
@@ -229,7 +269,8 @@ func SearchProductByQuery() gin.HandlerFunc {
 		searchquerydb, err := ProductCollection.Find(
 			ctx, bson.M{"product_name": bson.M{"$regex": queryParam}})
 		if err != nil {
-			c.IndentedJSON(http.StatusNotFound, "something went wrong while fetching the data")
+			c.IndentedJSON(
+				http.StatusNotFound, "something went wrong while fetching the data")
 			return
 		}
 

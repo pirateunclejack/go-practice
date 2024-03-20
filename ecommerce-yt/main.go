@@ -13,6 +13,7 @@ import (
 )
 
 func main() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatalf("failed to load .env file: %v", err)
@@ -35,6 +36,12 @@ func main() {
 
 	router.GET("/addtocart", app.AddToCart())
 	router.GET("/removeitem", app.RemoveItem())
+	router.GET("/listcart", controllers.GetItemFromCart())
+	router.POST("/addaddress", controllers.AddAddress())
+	router.GET("/address/list", controllers.ListAddress())
+	router.PUT("/edithomeaddress", controllers.EditHomeAddress())
+	router.PUT("/editworkaddress", controllers.EditWorkAddress())
+	router.GET("/deleteaddresses", controllers.DeleteAddress())
 	router.GET("/cartcheckout", app.BuyFromCart())
 	router.GET("/instantbuy", app.InstantBuy())
 

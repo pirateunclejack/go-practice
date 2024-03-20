@@ -8,11 +8,11 @@ import (
 
 type User struct {
 	ID					primitive.ObjectID	`json:"_id" bson:"_id"`
-	First_Name			*string				`json:"first_name" 	validate:"required,min=2,max30"`
-	Last_Name			*string				`json:"last_name" 	validate:"required,min=2,max30"`
-	Password			*string				`json:"password" 	validate:"required,min=6"`
-	Email				*string				`json:"email"   	validate:"required,email"`
-	Phone				*string				`json:"phone"   	validate:"required"`
+	First_Name			*string				`json:"first_name" validate:"required,min=2,max=30"`
+	Last_Name			*string				`json:"last_name" validate:"required,min=2,max=30"`
+	Password			*string				`json:"password" validate:"required,min=6"`
+	Email				*string				`json:"email" validate:"required,email"`
+	Phone				*string				`json:"phone" validate:"required"`
 	Token				*string				`json:"token"`
 	Refresh_Token		*string				`json:"refresh_token"`
 	Created_At			time.Time			`json:"created_at"`
@@ -41,7 +41,7 @@ type ProductUser struct {
 
 type Address struct {
 	Address_ID	primitive.ObjectID	`bson:"_id"`
-	House		*string				`json:"house" bson:"house"`
+	House		*string				`json:"house" bson:"house_name"`
 	Street		*string				`json:"street_name" bson:"street_name"`
 	City		*string				`json:"city_name" bson:"city_name"`
 	Pincode		*string				`json:"pin_code" bson:"pin_code"`

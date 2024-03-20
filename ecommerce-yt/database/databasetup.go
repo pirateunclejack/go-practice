@@ -7,11 +7,16 @@ import (
 	"os"
 	"time"
 
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func DBSet() *mongo.Client {
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatalf("failed to load.env file: %v", err)
+	}
 	db := os.Getenv("MONGODB")
 	if db == "" {
 		log.Fatalf("failed to load MONGODB environment variable")
