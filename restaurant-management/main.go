@@ -3,17 +3,16 @@ package main
 import (
 	"os"
 
-	"github.com/pirateunclejack/go-practice/restaurant-management/database"
+	"github.com/pirateunclejack/go-practice/restaurant-management/helpers"
 	"github.com/pirateunclejack/go-practice/restaurant-management/middleware"
 	"github.com/pirateunclejack/go-practice/restaurant-management/routes"
 
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var foodCollection *mongo.Collection = database.OpenCollection(database.Client, "food")
 
 func main() {
+    helpers.InitHelper()
     port := os.Getenv("PORT")
     if port == "" {
         port = "8000"
